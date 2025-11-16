@@ -30,11 +30,8 @@ map.dragging.disable();
 
 (async function () {
     try {
-        const districtsRes = await fetch("data/nyc-city-council-districts.geojson");
-        const districtsData = await districtsRes.json();
-
-        const neighborhoodsRes = await fetch("data/nyc-neighborhoods.geojson");
-        const neighborhoodsData = await neighborhoodsRes.json();
+        const res = await fetch("data/data.geojson");
+        const data = await res.json();
 
         const svgLayer = L.svg();
         svgLayer.addTo(map);
@@ -59,8 +56,10 @@ map.dragging.disable();
 
             const tooltip = d3.select("#tooltip");
 
-            g.selectAll("path")
-                .data(neighborhoodsData.features)
+            const neighborhoods = data.features.filter((d) => d.properties.BoroCode === 1);
+
+            g.selectAll("path.neighborhoods")
+                .data(neighborhoods)
                 .enter()
                 .append("path")
                 .attr("class", "area")
@@ -83,7 +82,7 @@ map.dragging.disable();
                     d3.selectAll("path.area").attr("fill-opacity", (d) => d.properties.opacity || 0.5);
                 });
 
-            const district = districtsData.features.filter((d) => d.properties.CounDist === 7);
+            const district = data.features.filter((d) => d.properties.CounDist === 7);
 
             g.selectAll("path.district")
                 .data(district)
