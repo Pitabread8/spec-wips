@@ -10,29 +10,28 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     </head>
     <body>
-        <div class="w-screen h-screen flex justify-center items-center flex-row gap-4 lg:gap-8">
-            <div class="w-screen md:w-1/2">
-                <figure class="sticky top-0 h-screen w-full overflow-hidden z-0 m-0">
-                    <div id="map" class="relative w-full h-full">
-                        <svg id="overlay" class="absolute top-0 left-0"></svg>
-                    </div>
-                </figure>
-                <div id="tooltip" class="absolute bg-white text-black p-1 text-xs sm:text-sm hidden"></div>
-            </div>
-            <div class="hidden w-1/2 h-screen md:flex items-center flex-col gap-4 lg:gap-8 overflow-y-scroll pr-6 py-8 text-sm lg:text-base">
-                <p>Article text goes here.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc efficitur mattis feugiat. Sed blandit dui feugiat diam mattis pharetra. Aenean tempus libero a leo gravida, eu mattis est efficitur. Suspendisse id tempus justo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus luctus leo est, tempus ultricies elit consectetur id. Nunc ex nulla, laoreet sed elit et, scelerisque feugiat augue. Quisque nec vestibulum erat, non aliquet purus. Sed id odio mauris. Fusce ultricies commodo mauris ac malesuada. Phasellus eu pellentesque turpis. Fusce vitae eleifend ex, ac luctus dui.</p>
-                <p>Vestibulum non quam viverra, vehicula lectus vel, lacinia orci. Nulla ut lectus ut turpis dignissim malesuada. Integer feugiat pharetra neque. Nulla dignissim lectus a lorem euismod tristique. Sed aliquet mi velit, eu volutpat eros gravida eget. Suspendisse accumsan non magna vitae consequat. Sed sed lacus fermentum, commodo ligula id, elementum velit. Phasellus placerat interdum dui. Vivamus luctus sem a ornare elementum. Praesent eu odio pretium justo sagittis consectetur vel et eros. Pellentesque faucibus vestibulum magna, vitae porttitor arcu euismod laoreet.</p>
-                <p>Nam sed orci augue. Aliquam ut dolor non nulla mollis interdum. Cras vel elit commodo, ornare diam in, tempus erat. Fusce gravida, est ac ornare gravida, ligula mi lacinia libero, vitae mattis lacus neque quis nisl. Vestibulum cursus lectus nec rhoncus auctor. Vestibulum ut est vitae velit fermentum gravida. Donec quis consectetur neque, id semper dolor. Pellentesque quam lectus, consectetur id pretium id, feugiat quis est. Integer at fringilla orci. Nunc faucibus gravida egestas. Sed leo dui, varius eget urna vitae, pharetra volutpat mi. Nunc in auctor diam. Sed dignissim vestibulum nunc quis gravida. Integer pulvinar, quam ut congue tristique, mi ligula posuere ligula, quis posuere sapien odio vel purus. Donec ultrices nisi arcu, id accumsan lacus consequat id.</p>
-                <p>Curabitur vestibulum lorem tellus, ut egestas lacus cursus in. Integer semper lobortis enim, ac convallis ante commodo nec. Donec vulputate est quis viverra lobortis. Nunc fringilla tortor eu hendrerit dignissim. Nunc et elit id metus tristique tempus vitae eget nisi. Sed eu arcu ac neque placerat tempus id vel lorem. Vestibulum lorem dui, hendrerit vestibulum nunc eu, hendrerit tempus lacus. Maecenas eget neque ipsum. Curabitur ullamcorper felis non enim semper, at vehicula mi aliquet. Nunc quis pharetra nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et varius arcu. Vestibulum tristique sed massa ut facilisis.</p>
-                <p>Integer lacinia et nunc ac lacinia. Praesent turpis erat, hendrerit eget consequat eget, mattis sit amet quam. Nulla volutpat rhoncus massa, eget tempus justo luctus vitae. Praesent id mollis tellus, ut viverra tellus. Fusce eleifend dapibus lorem non egestas. Sed vel blandit augue. Duis venenatis venenatis felis, non hendrerit arcu. Sed aliquam laoreet sodales. Morbi semper pellentesque purus, quis ultrices erat accumsan quis.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc efficitur mattis feugiat. Sed blandit dui feugiat diam mattis pharetra. Aenean tempus libero a leo gravida, eu mattis est efficitur. Suspendisse id tempus justo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus luctus leo est, tempus ultricies elit consectetur id. Nunc ex nulla, laoreet sed elit et, scelerisque feugiat augue. Quisque nec vestibulum erat, non aliquet purus. Sed id odio mauris. Fusce ultricies commodo mauris ac malesuada. Phasellus eu pellentesque turpis. Fusce vitae eleifend ex, ac luctus dui.</p>
-                <p>Vestibulum non quam viverra, vehicula lectus vel, lacinia orci. Nulla ut lectus ut turpis dignissim malesuada. Integer feugiat pharetra neque. Nulla dignissim lectus a lorem euismod tristique. Sed aliquet mi velit, eu volutpat eros gravida eget. Suspendisse accumsan non magna vitae consequat. Sed sed lacus fermentum, commodo ligula id, elementum velit. Phasellus placerat interdum dui. Vivamus luctus sem a ornare elementum. Praesent eu odio pretium justo sagittis consectetur vel et eros. Pellentesque faucibus vestibulum magna, vitae porttitor arcu euismod laoreet.</p>
-                <p>Nam sed orci augue. Aliquam ut dolor non nulla mollis interdum. Cras vel elit commodo, ornare diam in, tempus erat. Fusce gravida, est ac ornare gravida, ligula mi lacinia libero, vitae mattis lacus neque quis nisl. Vestibulum cursus lectus nec rhoncus auctor. Vestibulum ut est vitae velit fermentum gravida. Donec quis consectetur neque, id semper dolor. Pellentesque quam lectus, consectetur id pretium id, feugiat quis est. Integer at fringilla orci. Nunc faucibus gravida egestas. Sed leo dui, varius eget urna vitae, pharetra volutpat mi. Nunc in auctor diam. Sed dignissim vestibulum nunc quis gravida. Integer pulvinar, quam ut congue tristique, mi ligula posuere ligula, quis posuere sapien odio vel purus. Donec ultrices nisi arcu, id accumsan lacus consequat id.</p>
-                <p>Curabitur vestibulum lorem tellus, ut egestas lacus cursus in. Integer semper lobortis enim, ac convallis ante commodo nec. Donec vulputate est quis viverra lobortis. Nunc fringilla tortor eu hendrerit dignissim. Nunc et elit id metus tristique tempus vitae eget nisi. Sed eu arcu ac neque placerat tempus id vel lorem. Vestibulum lorem dui, hendrerit vestibulum nunc eu, hendrerit tempus lacus. Maecenas eget neque ipsum. Curabitur ullamcorper felis non enim semper, at vehicula mi aliquet. Nunc quis pharetra nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et varius arcu. Vestibulum tristique sed massa ut facilisis.</p>
-                <p>Integer lacinia et nunc ac lacinia. Praesent turpis erat, hendrerit eget consequat eget, mattis sit amet quam. Nulla volutpat rhoncus massa, eget tempus justo luctus vitae. Praesent id mollis tellus, ut viverra tellus. Fusce eleifend dapibus lorem non egestas. Sed vel blandit augue. Duis venenatis venenatis felis, non hendrerit arcu. Sed aliquam laoreet sodales. Morbi semper pellentesque purus, quis ultrices erat accumsan quis.</p>
+        <div class="w-screen md:h-screen flex flex-col md:flex-row">
+            <figure class="sticky top-0 h-screen md:w-1/2 w-full overflow-hidden z-0 m-0">
+                <div id="map" class="relative w-full h-full">
+                    <svg id="overlay" class="absolute top-0 left-0"></svg>
+                </div>
+            </figure>
+            
+            <div id="tooltip" class="absolute bg-white text-black p-1 text-xs sm:text-sm hidden"></div>
+            
+            <div class="relative z-10 flex flex-col items-center text-sm text-center md:w-1/2 md:h-screen md:items-start md:overflow-y-scroll md:text-left md:p-8 md:gap-4 mb-[100vh]">
+                <div class="h-screen flex items-center justify-center p-4 md:h-auto md:flex-none md:items-start md:justify-start md:w-full">
+                    <p class="bg-white p-4 rounded-md shadow-lg md:bg-transparent md:p-0 md:shadow-none">Article paragraph goes here. 1</p>
+                </div>
+                <div class="h-screen flex items-center justify-center p-4 md:h-auto md:flex-none md:items-start md:justify-start md:w-full">
+                    <p class="bg-white p-4 rounded-md shadow-lg md:bg-transparent md:p-0 md:shadow-none">Article paragraph goes here. 2</p>
+                </div>
+                <div class="h-screen flex items-center justify-center p-4 md:h-auto md:flex-none md:items-start md:justify-start md:w-full">
+                    <p class="bg-white p-4 rounded-md shadow-lg md:bg-transparent md:p-0 md:shadow-none">Article paragraph goes here. 3</p>
+                </div>
             </div>
         </div>
+        
         <script src="./script.js"></script>
     </body>
 </html>

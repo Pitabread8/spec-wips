@@ -1,4 +1,6 @@
-const map = L.map("map", { minZoom: 13, maxZoom: 16 }).setView([40.82, -73.96], 13);
+const isMobile = window.innerWidth < 768;
+
+const map = L.map("map", { minZoom: 13, maxZoom: 16, scrollWheelZoom: !isMobile, zoomControl: !isMobile }).setView([40.82, -73.96], 13);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap contributors",
 }).addTo(map);
@@ -53,7 +55,11 @@ map.dragging.disable();
                 .style("pointer-events", "all")
                 .style("cursor", "pointer")
                 .on("mouseover", function (event, d) {
-                    tooltip.style("display", "block").text(d.properties.NTAName).style("background-color", d.properties.fill || "white").style("color", "black");
+                    tooltip
+                        .style("display", "block")
+                        .text(d.properties.NTAName)
+                        .style("background-color", d.properties.fill || "white")
+                        .style("color", "black");
                     d3.select(this).attr("fill-opacity", (d) => d.properties.opacity || 0.8);
                 })
                 .on("mousemove", function (event) {
