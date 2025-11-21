@@ -74,7 +74,7 @@ map.dragging.disable();
                 .attr("class", "highlight")
                 .attr("d", path)
                 .attr("fill", "#003865")
-                .attr("fill-opacity", 0.4)
+                .attr("fill-opacity", 0.5)
                 .style("pointer-events", "all")
                 .style("cursor", "pointer")
                 .on("mouseover", function (event, d) {
