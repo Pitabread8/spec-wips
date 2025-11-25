@@ -8,9 +8,6 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const columbiaMarker = L.marker([40.8075, -73.9626]).addTo(map);
 columbiaMarker.bindPopup("<b>Columbia's Morningside Heights campus");
 
-const hamiltonHeightsMarker = L.marker([40.825, -73.9483]).addTo(map);
-hamiltonHeightsMarker.bindPopup("<b>Hamilton Heights</b>");
-
 map.dragging.disable();
 
 (async function () {
@@ -58,8 +55,8 @@ map.dragging.disable();
                     tooltip
                         .style("display", "block")
                         .text(d.properties.NTAName)
-                        .style("background-color", d.properties.fill || "white")
-                        .style("color", "black");
+                        .style("background-color", "white")
+                        .style("color", d.properties.fill || "black");
                     d3.select(this).attr("fill-opacity", (d) => d.properties.opacity || 0.8);
                 })
                 .on("mousemove", function (event) {
