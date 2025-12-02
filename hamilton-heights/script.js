@@ -5,7 +5,43 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap contributors",
 }).addTo(map);
 
-const columbiaMarker = L.marker([40.8075, -73.9626]).addTo(map);
+var pinIcon = L.divIcon({
+    html: `
+    <svg width="34" height="34" viewBox="0 0 24 24">
+      <defs>
+        <filter id="outerShadow" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="1.2" stdDeviation="2" flood-color="#00000055"/>
+        </filter>
+
+        <filter id="insetShadow" x="-50%" y="-50%" width="200%" height="200%">
+          <feOffset dx="0" dy="0"/>
+          <feGaussianBlur stdDeviation="1.5" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="arithmetic"
+            k2="-1" k3="1"/>
+          <feFlood flood-color="#00000033" result="color"/>
+          <feComposite in="color" in2="SourceGraphic" operator="in" result="shadow"/>
+          <feComposite in="shadow" in2="SourceGraphic" operator="over"/>
+        </filter>
+      </defs>
+
+      <g filter="url(#outerShadow)">
+        <path
+          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
+          fill="#B9D9EB"
+          stroke="#1D4F91"
+          stroke-width="1.2"
+          filter="url(#insetShadow)"
+        />
+        <circle cx="12" cy="9" r="2.5" fill="#1D4F91"/>
+      </g>
+    </svg>
+  `,
+    className: "",
+    iconSize: [34, 34],
+    iconAnchor: [17, 6],
+});
+
+const columbiaMarker = L.marker([40.80785, -73.9623], { icon: pinIcon }).addTo(map);
 columbiaMarker.bindPopup("<b>Columbia's Morningside Heights campus");
 
 map.dragging.disable();
@@ -77,7 +113,7 @@ map.dragging.disable();
                 .attr("class", "highlight")
                 .attr("d", path)
                 .attr("fill", "#003865")
-                .attr("fill-opacity", 0.5)
+                .attr("fill-opacity", 0.4)
                 .style("pointer-events", "all")
                 .style("cursor", "pointer")
                 .on("mouseover", function (event, d) {
