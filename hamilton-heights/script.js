@@ -60,14 +60,11 @@ function updateTooltip(lines, x, y) {
     const tooltipWidth = tooltipNode.offsetWidth;
     const tooltipHeight = tooltipNode.offsetHeight;
 
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
     let clampedX = x;
     let clampedY = y;
 
-    if (x + tooltipWidth + 10 > viewportWidth) clampedX = x - tooltipWidth - 10;
-    if (y + tooltipHeight + 10 > viewportHeight) clampedY = y - tooltipHeight - 10;
+    if (x + tooltipWidth + 10 > window.innerWidth) clampedX = x - tooltipWidth - 10;
+    if (y + tooltipHeight + 10 > window.innerHeight) clampedY = y - tooltipHeight - 10;
     if (clampedX < 0) clampedX = 0;
     if (clampedY < 0) clampedY = 0;
 
