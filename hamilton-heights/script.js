@@ -1,4 +1,5 @@
 const isMobile = window.innerWidth < 768;
+const tooltip = d3.select("#tooltip");
 
 const map = L.map("map", { minZoom: 13, maxZoom: 16, scrollWheelZoom: !isMobile, zoomControl: !isMobile }).setView([40.82, -73.96], 13);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -46,6 +47,37 @@ columbiaMarker.bindPopup("<b>Columbia's Morningside Heights campus");
 
 map.dragging.disable();
 
+function featuresAtLatLng(latlng, features) {
+    const point = [latlng.lng, latlng.lat];
+    return features.filter((f) => d3.geoContains(f, point));
+}
+
+function updateTooltip(lines, x, y) {
+    const html = lines.map((line) => `<div style="padding: 4px 8px; margin: 0; background:${line.bg}; color:${line.color};">${line.text}</div>`).join("");
+    tooltip.html(html).style("background", "transparent").style("position", "absolute").style("display", "block");
+
+    const tooltipNode = tooltip.node();
+    const tooltipWidth = tooltipNode.offsetWidth;
+    const tooltipHeight = tooltipNode.offsetHeight;
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    let clampedX = x;
+    let clampedY = y;
+
+    if (x + tooltipWidth + 10 > viewportWidth) clampedX = x - tooltipWidth - 10;
+    if (y + tooltipHeight + 10 > viewportHeight) clampedY = y - tooltipHeight - 10;
+    if (clampedX < 0) clampedX = 0;
+    if (clampedY < 0) clampedY = 0;
+
+    tooltip.style("left", clampedX + "px").style("top", clampedY + "px");
+}
+
+function hideTooltip() {
+    tooltip.style("display", "none");
+}
+
 (async function () {
     try {
         const res = await fetch("data/data.geojson");
@@ -59,6 +91,43 @@ map.dragging.disable();
         const g = svg.append("g").attr("class", "d3-overlay");
 
         drawOverlay();
+
+        map.on("mousemove", function (e) {
+            const neighborhoods = data.features.filter((d) => d.properties.BoroCode === 1);
+            const district = data.features.filter((d) => d.properties.CounDist === 7);
+
+            const hitsA = featuresAtLatLng(e.latlng, neighborhoods);
+            const hitsB = featuresAtLatLng(e.latlng, district);
+
+            const lines = [];
+
+            hitsB.forEach((f) => {
+                lines.push({
+                    text: "City Council District 7",
+                    bg: "#003865",
+                    color: "white",
+                });
+            });
+
+            hitsA.forEach((f) => {
+                lines.push({
+                    text: f.properties.NTAName,
+                    bg: "white",
+                    color: f.properties.fill || "black",
+                });
+
+                g.selectAll("path.area")
+                    .filter((d) => d === f)
+                    .attr("fill-opacity", (d) => d.properties.opacity || 0.8);
+            });
+
+            if (lines.length > 0) {
+                updateTooltip(lines, e.originalEvent.pageX + 10, e.originalEvent.pageY - 28);
+            } else {
+                hideTooltip();
+            }
+        });
+
         map.on("moveend", drawOverlay);
 
         function drawOverlay() {
@@ -70,9 +139,8 @@ map.dragging.disable();
                     this.stream.point(point.x, point.y);
                 },
             });
-            const path = d3.geoPath().projection(transform);
 
-            const tooltip = d3.select("#tooltip");
+            const path = d3.geoPath().projection(transform);
 
             const neighborhoods = data.features.filter((d) => d.properties.BoroCode === 1);
 
@@ -87,44 +155,13 @@ map.dragging.disable();
                 .attr("fill-opacity", (d) => d.properties.opacity || 0.5)
                 .style("pointer-events", "all")
                 .style("cursor", "pointer")
-                .on("mouseover", function (event, d) {
-                    tooltip
-                        .style("display", "block")
-                        .text(d.properties.NTAName)
-                        .style("background-color", "white")
-                        .style("color", d.properties.fill || "black");
-                    d3.select(this).attr("fill-opacity", (d) => d.properties.opacity || 0.8);
-                })
-                .on("mousemove", function (event) {
-                    tooltip.style("left", event.pageX + 10 + "px").style("top", event.pageY - 28 + "px");
-                })
                 .on("mouseout", function () {
-                    tooltip.style("display", "none");
-                    d3.selectAll("path.area").attr("stroke-width", 1);
                     d3.selectAll("path.area").attr("fill-opacity", (d) => d.properties.opacity || 0.5);
                 });
 
             const district = data.features.filter((d) => d.properties.CounDist === 7);
 
-            g.selectAll("path.district")
-                .data(district)
-                .enter()
-                .append("path")
-                .attr("class", "highlight")
-                .attr("d", path)
-                .attr("fill", "#003865")
-                .attr("fill-opacity", 0.4)
-                .style("pointer-events", "all")
-                .style("cursor", "pointer")
-                .on("mouseover", function (event, d) {
-                    tooltip.style("display", "block").text("City Council District 7").style("background-color", "#003865").style("color", "white");
-                })
-                .on("mousemove", function (event) {
-                    tooltip.style("left", event.pageX + 10 + "px").style("top", event.pageY - 28 + "px");
-                })
-                .on("mouseout", function () {
-                    tooltip.style("display", "none");
-                });
+            g.selectAll("path.district").data(district).enter().append("path").attr("class", "highlight").attr("d", path).attr("fill", "#003865").attr("fill-opacity", 0.4).style("pointer-events", "all").style("cursor", "pointer");
         }
     } catch (err) {
         console.error("Error loading GeoJSON:", err);
