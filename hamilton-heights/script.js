@@ -42,8 +42,14 @@ var pinIcon = L.divIcon({
     iconAnchor: [17, 6],
 });
 
-const columbiaMarker = L.marker([40.80785, -73.9623], { icon: pinIcon }).addTo(map);
-columbiaMarker.bindPopup("<b>Columbia's Morningside Heights campus");
+const morningsideMarker = L.marker([40.80785, -73.9623], { icon: pinIcon }).addTo(map);
+morningsideMarker.bindPopup("<b>Columbia&rsquo;s Morningside campus</b>");
+
+const manhattanvilleMarker = L.marker([40.8179, -73.9564], { icon: pinIcon }).addTo(map);
+manhattanvilleMarker.bindPopup("<b>Columbia&rsquo;s Manhattanville campus</b>");
+
+const cuimcMarker = L.marker([40.8417, -73.9415], { icon: pinIcon }).addTo(map);
+cuimcMarker.bindPopup("<b>Columbia University Irving Medical Center</b>");
 
 map.dragging.disable();
 
