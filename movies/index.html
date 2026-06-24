@@ -1,261 +1,276 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Best Movies of the 21st Century</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Roboto:wght@300;400&display=swap');
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>The Best Movies of the 21st Century</title>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Roboto:wght@300;400&display=swap");
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-    body {
-      background: #ffffff;
-      color: #1f1a17;
-      font-family: 'Playfair Display', Georgia, serif;
-      -webkit-font-smoothing: antialiased;
-    }
+            body {
+                background: #ffffff;
+                color: #1f1a17;
+                font-family: "Playfair Display", Georgia, serif;
+                -webkit-font-smoothing: antialiased;
+            }
 
-    /* ── LIST ── */
-    .movie-list {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 12px 48px;
-    }
+            /* ── LIST ── */
+            .movie-list {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 0 12px 48px;
+            }
 
-    /* ── ENTRY ── */
-    .entry {
-      display: grid;
-      grid-template-columns: 52px 210px 1fr;
-      gap: 0 24px;
-      align-items: start;
-      padding: 26px 0;
-      border-bottom: 1px solid #e7e1d8;
-      transition: background 0.2s;
-    }
+            /* ── ENTRY ── */
+            .entry {
+                display: grid;
+                grid-template-columns: 52px 210px 1fr;
+                gap: 0 24px;
+                align-items: start;
+                padding: 26px 0;
+                border-bottom: 1px solid #e7e1d8;
+                transition: background 0.2s;
+            }
 
-    .entry:hover {
-      background: rgba(0,0,0,0.03);
-      margin: 0 -16px;
-      padding-left: 16px;
-      padding-right: 16px;
-    }
+            .entry:hover {
+                background: rgba(0, 0, 0, 0.03);
+                margin: 0 -16px;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
 
-    /* rank */
-    .rank {
-      font-size: 38px;
-      font-weight: 700;
-      line-height: 1;
-      color: #c8c0b6;
-      letter-spacing: -0.04em;
-      padding-top: 4px;
-      text-align: right;
-    }
+            /* rank */
+            .rank {
+                font-size: 38px;
+                font-weight: 700;
+                line-height: 1;
+                color: #c8c0b6;
+                letter-spacing: -0.04em;
+                padding-top: 4px;
+                text-align: right;
+            }
 
-    /* poster */
-    .poster {
-      width: 100%;
-      aspect-ratio: 4 / 5;
-      border-radius: 2px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
+            /* poster */
+            .poster {
+                width: 100%;
+                aspect-ratio: 4 / 5;
+                border-radius: 2px;
+                overflow: hidden;
+                flex-shrink: 0;
+            }
 
-    .poster img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+            .poster img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
 
-    /* text */
-    .meta {
-      padding-top: 2px;
-    }
+            /* text */
+            .meta {
+                padding-top: 2px;
+            }
 
-    .meta .title {
-      font-size: 21px;
-      font-weight: 700;
-      line-height: 1.2;
-      color: #1f1a17;
-      margin-bottom: 5px;
-    }
+            .meta .title {
+                font-size: 21px;
+                font-weight: 700;
+                line-height: 1.2;
+                color: #1f1a17;
+                margin-bottom: 5px;
+            }
 
-    .meta .byline {
-      font-size: 12px;
-      font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #6f675e;
-      margin-bottom: 10px;
-    }
+            .meta .byline {
+                font-size: 12px;
+                font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: #6f675e;
+                margin-bottom: 10px;
+            }
 
-    .meta .desc {
-      font-family: 'Roboto', -apple-system, Arial, sans-serif;
-      font-size: 14px;
-      font-weight: 300;
-      line-height: 1.6;
-      color: #4f4941;
-    }
+            .meta .desc {
+                font-family:
+                    "Roboto",
+                    -apple-system,
+                    Arial,
+                    sans-serif;
+                font-size: 14px;
+                font-weight: 300;
+                line-height: 1.6;
+                color: #4f4941;
+            }
 
-    .entry--tie {
-      grid-template-columns: 48px 1fr;
-    }
+            .entry--tie {
+                grid-template-columns: 48px 1fr;
+            }
 
-    .tie-films {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
+            .tie-films {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+            }
 
-    .tie-film {
-      display: grid;
-      grid-template-columns: 210px 1fr;
-      gap: 0 24px;
-      align-items: start;
-      padding: 12px 0;
-      border-bottom: 1px solid #e7e1d8;
-    }
+            .tie-film {
+                display: grid;
+                grid-template-columns: 210px 1fr;
+                gap: 0 24px;
+                align-items: start;
+                padding: 12px 0;
+                border-bottom: 1px solid #e7e1d8;
+            }
 
-    .tie-film:first-child { padding-top: 0; }
-    .tie-film:last-child  { padding-bottom: 0; border-bottom: none; }
+            .tie-film:first-child {
+                padding-top: 0;
+            }
+            .tie-film:last-child {
+                padding-bottom: 0;
+                border-bottom: none;
+            }
 
-    .meta .points {
-      display: inline-block;
-      font-family: 'Roboto', -apple-system, Arial, sans-serif;
-      font-size: 12px;
-      font-weight: 500;
-      color: #4f4941;
-      background: #f7f4ef;
-      border: 1px solid #e5ddd4;
-      margin-top: 8px;
-      padding: 2px 7px;
-      border-radius: 3px;
-      letter-spacing: 0.05em;
-    }
+            .meta .points {
+                display: inline-block;
+                font-family:
+                    "Roboto",
+                    -apple-system,
+                    Arial,
+                    sans-serif;
+                font-size: 12px;
+                font-weight: 500;
+                color: #4f4941;
+                background: #f7f4ef;
+                border: 1px solid #e5ddd4;
+                margin-top: 8px;
+                padding: 2px 7px;
+                border-radius: 3px;
+                letter-spacing: 0.05em;
+            }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      .entry {
-        grid-template-columns: 44px 1fr;
-        grid-template-rows: auto auto;
-      }
+            /* ── RESPONSIVE ── */
+            @media (max-width: 640px) {
+                .entry {
+                    grid-template-columns: 44px 1fr;
+                    grid-template-rows: auto auto;
+                }
 
-      .tie-film {
-        grid-template-columns: auto auto;
-        grid-template-rows: auto auto;
-        gap: 0;
-      }
+                .tie-film {
+                    grid-template-columns: auto auto;
+                    grid-template-rows: auto auto;
+                    gap: 0;
+                }
 
-      .poster { 
-        grid-column: 2; 
-        grid-row: 1; 
-        aspect-ratio: 4/5; 
-      }
+                .poster {
+                    grid-column: 2;
+                    grid-row: 1;
+                    aspect-ratio: 4/5;
+                }
 
-      .meta { 
-        grid-column: 2; 
-        grid-row: 2; 
-      }
+                .meta {
+                    grid-column: 2;
+                    grid-row: 2;
+                }
 
-      .rank { 
-        grid-column: 1; 
-        grid-row: 1; 
-        font-size: 36px; 
-      }
+                .rank {
+                    grid-column: 1;
+                    grid-row: 1;
+                    font-size: 36px;
+                }
 
-      .meta .title {
-        margin: 12px auto 8px;
-      }
-    }
-  </style>
-</head>
-<body>
+                .meta .title {
+                    margin: 12px auto 8px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main class="movie-list">
+            <article class="entry">
+                <div class="rank">1</div>
+                <div class="poster"><img src="everything.png" alt="" /></div>
+                <div class="meta">
+                    <div class="title">“Everything Everywhere All at Once”</div>
+                    <div class="byline">Dir. Daniel Kwan &amp; Daniel Scheinert &bull; 2022</div>
+                    <p class="desc">“In another life, I would’ve really liked just doing laundry and taxes with you,” Waymond Wang (Ke Huy Quan) tells his wife, Evelyn Wang (Michelle Yeoh), in an alternate timeline after an IRS audit triggers a cross-multiverse adventure. “Everything Everywhere All at Once” superimposes the everyday struggles of the Wang family onto the grand, expansive backdrop of the multiverse. Behind the lustrous veil of showstopper action set pieces, sentient rocks, and hot dog fingers is a story that means to reckon with the ever-intensifying force of modernity, generational trauma, and the everything bagel of despair that comes for all of us.</p>
+                    <p class="points">Points: 13</p>
+                </div>
+            </article>
 
-<main class="movie-list">
+            <article class="entry">
+                <div class="rank">2</div>
+                <div class="poster"><img src="y.png" alt="" /></div>
+                <div class="meta">
+                    <div class="title">“Y tu mamá también”</div>
+                    <div class="byline">Dir. Alfonso Cuarón &bull; 2001</div>
+                    <p class="desc">The ultimate road trip movie. “Y tu mamá también” follows main characters Tenoch Iturbide (Diego Luna) and Julio Zapata (Gael García Bernal) as they traverse the striking landscapes of southeastern Mexico on their quest for paradise. The film sees the pair, accompanied by Luisa Cortés (Maribel Verdú), who faces her own personal crises, undergo a journey of sexual exploration, individuation, and self-possession. Alfonso Cuarón toes the line between effortlessly entertaining and deeply truthful drama, crafting a story that demands to be rewatched again and again.</p>
+                    <p class="points">Points: 12</p>
+                </div>
+            </article>
 
-  <article class="entry">
-    <div class="rank">1</div>
-    <div class="poster"><img src="everything.png" alt=""></div>
-    <div class="meta">
-      <div class="title">“Everything Everywhere All at Once”</div>
-      <div class="byline">Dir. Daniel Kwan &amp; Daniel Scheinert &bull; 2022</div>
-      <p class="desc">“In another life, I would’ve really liked just doing laundry and taxes with you,” Waymond Wang (Ke Huy Quan) tells his wife, Evelyn Wang (Michelle Yeoh), in an alternate timeline after an IRS audit triggers a cross-multiverse adventure. “Everything Everywhere All at Once” superimposes the everyday struggles of the Wang family onto the grand, expansive backdrop of the multiverse. Behind the lustrous veil of showstopper action set pieces, sentient rocks, and hot dog fingers is a story that means to reckon with the ever-intensifying force of modernity, generational trauma, and the everything bagel of despair that comes for all of us.</p>
-      <p class="points">Points: 13</p>
-    </div>
-  </article>
+            <article class="entry">
+                <div class="rank">3</div>
+                <div class="poster"><img src="interstellar.png" alt="" /></div>
+                <div class="meta">
+                    <div class="title">“Interstellar”</div>
+                    <div class="byline">Dir. Christopher Nolan &bull; 2014</div>
+                    <p class="desc">In a near-distant future, with Earth on the brink of uninhabitability, humans have no choice but to look beyond. Who better to lead the journey than astronaut extraordinaire Cooper (Mathew McConaughey)? One cosmological danger after another, from mountainous waves to time-travel-enabling black holes, the wonders of space are realized to their fullest extent. With Hans Zimmer’s now culturally cemented score behind it, “Interstellar” is the preeminent sci-fi film of the 21st century.</p>
+                    <p class="points">Points: 9</p>
+                </div>
+            </article>
 
-  <article class="entry">
-    <div class="rank">2</div>
-    <div class="poster"><img src="y.png" alt=""></div>
-    <div class="meta">
-      <div class="title">“Y tu mamá también”</div>
-      <div class="byline">Dir. Alfonso Cuarón &bull; 2001</div>
-      <p class="desc">The ultimate road trip movie. “Y tu mamá también” follows main characters Tenoch Iturbide (Diego Luna) and Julio Zapata (Gael García Bernal) as they traverse the striking landscapes of southeastern Mexico on their quest for paradise. The film sees the pair, accompanied by Luisa Cortés (Maribel Verdú), who faces her own personal crises, undergo a journey of sexual exploration, individuation, and self-possession. Alfonso Cuarón toes the line between effortlessly entertaining and deeply truthful drama, crafting a story that demands to be rewatched again and again.</p>
-      <p class="points">Points: 12</p>
-    </div>
-  </article>
+            <article class="entry entry--tie">
+                <div class="rank">4</div>
+                <div class="tie-films">
+                    <div class="tie-film">
+                        <div class="poster"><img src="whiplash.png" alt="" /></div>
+                        <div class="meta">
+                            <div class="title">“Whiplash” (Tied)</div>
+                            <div class="byline">Dir. Damien Chazelle &bull; 2014</div>
+                            <p class="desc">What does it take to be great? Andrew (Miles Teller), an aspiring jazz drummer, spends the duration of “Whiplash” reckoning with this question. Anchored by a brilliantly wrathful performance from JK Simmons as Fletcher, the abusive mentor who pushes Andrew to the farthest reaches of his limits, the story delicately builds tension towards inevitable cacophony. When this does occur, it happens with a narrative precision as fine and as rhythmic as that of the film’s musical composites.</p>
+                            <p class="points">Points: 8</p>
+                        </div>
+                    </div>
+                    <div class="tie-film">
+                        <div class="poster"><img src="la.png" alt="" /></div>
+                        <div class="meta">
+                            <div class="title">“La La Land” (Tied)</div>
+                            <div class="byline">Dir. Damien Chazelle &bull; 2016</div>
+                            <p class="desc">Damien Chazelle dreams up a Los Angeles pervaded with a sort of magic. With Mia (Emma Stone), an aspiring actor, and Sebastian (Ryan Gosling), a jazz pianist, at the helm, the two complicate the classic rom-com model when their dreams are in question. With elaborate musical arrangements, traffic-jam dance numbers, and an entrancingly bright color scheme, it’s hard not to find yourself caught by the magic of “La La Land.”</p>
+                            <p class="points">Points: 8</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
 
-  <article class="entry">
-    <div class="rank">3</div>
-    <div class="poster"><img src="interstellar.png" alt=""></div>
-    <div class="meta">
-      <div class="title">“Interstellar”</div>
-      <div class="byline">Dir. Christopher Nolan &bull; 2014</div>
-      <p class="desc">In a near-distant future, with Earth on the brink of uninhabitability, humans have no choice but to look beyond. Who better to lead the journey than astronaut extraordinaire Cooper (Mathew McConaughey)? One cosmological danger after another, from mountainous waves to time-travel-enabling black holes, the wonders of space are realized to their fullest extent. With Hans Zimmer’s now culturally cemented score behind it, “Interstellar” is the preeminent sci-fi film of the 21st century.</p>
-      <p class="points">Points: 9</p>
-    </div>
-  </article>
-
-  <article class="entry entry--tie">
-    <div class="rank">4</div>
-    <div class="tie-films">
-      <div class="tie-film">
-        <div class="poster"><img src="whiplash.png" alt=""></div>
-        <div class="meta">
-          <div class="title">“Whiplash” (Tied)</div>
-          <div class="byline">Dir. Damien Chazelle &bull; 2014</div>
-          <p class="desc">What does it take to be great? Andrew (Miles Teller), an aspiring jazz drummer, spends the duration of “Whiplash” reckoning with this question. Anchored by a brilliantly wrathful performance from JK Simmons as Fletcher, the abusive mentor who pushes Andrew to the farthest reaches of his limits, the story delicately builds tension towards inevitable cacophony. When this does occur, it happens with a narrative precision as fine and as rhythmic as that of the film’s musical composites.</p>
-          <p class="points">Points: 8</p>
-        </div>
-      </div>
-      <div class="tie-film">
-        <div class="poster"><img src="la.png" alt=""></div>
-        <div class="meta">
-          <div class="title">“La La Land” (Tied)</div>
-          <div class="byline">Dir. Damien Chazelle &bull; 2016</div>
-          <p class="desc">Damien Chazelle dreams up a Los Angeles pervaded with a sort of magic. With Mia (Emma Stone), an aspiring actor, and Sebastian (Ryan Gosling), a jazz pianist, at the helm, the two complicate the classic rom-com model when their dreams are in question. With elaborate musical arrangements, traffic-jam dance numbers, and an entrancingly bright color scheme, it’s hard not to find yourself caught by the magic of “La La Land.”</p>
-          <p class="points">Points: 8</p>
-        </div>
-      </div>
-    </div>
-  </article>
-
-  <article class="entry entry--tie">
-    <div class="rank">5</div>
-    <div class="tie-films">
-      <div class="tie-film">
-        <div class="poster"><img src="princess.png" alt=""></div>
-        <div class="meta">
-          <div class="title">“Princess Mononoke” (Tied)</div>
-          <div class="byline">Dir. Hayao Miyazaki &bull; 1997</div>
-          <p class="desc">One in a long line of culturally significant creations from the mind of Hayao Miyazaki, “Princess Mononoke” weaves a pointed commentary on overindustrialization within a deeply charming imagined world of soft pastels and lush landscapes. The film, adapted from “Shuna’s Journey,” a graphic novel written and illustrated by Miyazaki in 1983, follows Ashitaka (Yōji Matsuda) on his quest westward for a cure after being cursed by Nago, a giant boar god.</p>
-          <p class="points">Points: 7</p>
-        </div>
-      </div>
-      <div class="tie-film">
-        <div class="poster"><img src="how.png" alt=""></div>
-        <div class="meta">
-          <div class="title">“How to Train Your Dragon” (Tied)</div>
-          <div class="byline">Dir. Dean DeBlois &amp; Chris Sanders &bull; 2010</div>
-          <p class="desc">Dragon is man’s best friend in the DreamWorks animated classic “How to Train Your Dragon.” Despite a century-long conflict between dragons and humans, Norse teenager Hiccup (Jay Baruchel) develops an immediate and unlikely connection with Toothless, a rare Night Fury dragon. The on-screen pairing blossoms into one of animated cinema’s most iconic friendships, a chemistry grounded in radical kindness and a mutual curiosity.</p>
-          <p class="points">Points: 7</p>
-        </div>
-      </div>
-    </div>
-  </article>
-
-</main>
-
-</body>
+            <article class="entry entry--tie">
+                <div class="rank">5</div>
+                <div class="tie-films">
+                    <div class="tie-film">
+                        <div class="poster"><img src="princess.png" alt="" /></div>
+                        <div class="meta">
+                            <div class="title">“Princess Mononoke” (Tied)</div>
+                            <div class="byline">Dir. Hayao Miyazaki &bull; 1997</div>
+                            <p class="desc">One in a long line of culturally significant creations from the mind of Hayao Miyazaki, “Princess Mononoke” weaves a pointed commentary on overindustrialization within a deeply charming imagined world of soft pastels and lush landscapes. The film, adapted from “Shuna’s Journey,” a graphic novel written and illustrated by Miyazaki in 1983, follows Ashitaka (Yōji Matsuda) on his quest westward for a cure after being cursed by Nago, a giant boar god.</p>
+                            <p class="points">Points: 7</p>
+                        </div>
+                    </div>
+                    <div class="tie-film">
+                        <div class="poster"><img src="how.png" alt="" /></div>
+                        <div class="meta">
+                            <div class="title">“How to Train Your Dragon” (Tied)</div>
+                            <div class="byline">Dir. Dean DeBlois &amp; Chris Sanders &bull; 2010</div>
+                            <p class="desc">Dragon is man’s best friend in the DreamWorks animated classic “How to Train Your Dragon.” Despite a century-long conflict between dragons and humans, Norse teenager Hiccup (Jay Baruchel) develops an immediate and unlikely connection with Toothless, a rare Night Fury dragon. The on-screen pairing blossoms into one of animated cinema’s most iconic friendships, a chemistry grounded in radical kindness and a mutual curiosity.</p>
+                            <p class="points">Points: 7</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </main>
+    </body>
 </html>
