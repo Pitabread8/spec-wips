@@ -3,11 +3,18 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Scrolly Movie Rankings</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
         <style>
+            :root {
+                --black: #121212;
+                --dark: #272727;
+                --light: #9c9c9c;
+                --white: #f8f8f8;
+                --orange: #eb9235;
+            }
+
             * {
                 box-sizing: border-box;
             }
@@ -17,7 +24,8 @@
                 margin: 0;
                 min-height: 100%;
                 font-family: "Roboto", Arial, Helvetica, sans-serif;
-                color: #e8e3da;
+                background: var(--black);
+                color: var(--white);
                 -webkit-font-smoothing: antialiased;
             }
 
@@ -65,7 +73,7 @@
                 display: grid;
                 gap: 18px;
                 padding-top: 4px;
-                padding-bottom: 20vh;
+                padding-bottom: 10vh;
             }
 
             .story-card {
@@ -79,13 +87,12 @@
                 width: 100%;
                 padding: 26px 24px;
                 /* border-radius: 24px; */
-                background: #ffffff;
-                border: 4px solid #111111;
-                box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+                border: 4px solid var(--light);
+                box-shadow: 0 10px 100px -50px var(--light);
             }
 
             .genre-highlight {
-                color: #eb9235;
+                color: var(--orange);
                 font-weight: 700;
             }
 
@@ -94,14 +101,9 @@
                 font-size: clamp(1rem, 1.05vw, 1.16rem);
                 line-height: 1.8;
                 font-family: "Roboto", Arial, Helvetica, sans-serif;
-                color: #1f1b17;
             }
 
             @media (max-width: 980px) {
-                body {
-                    color: #000;
-                }
-
                 .scrolly-layout {
                     grid-template-columns: 1fr;
                 }
@@ -145,7 +147,7 @@
             <section class="scrolly-layout" aria-label="Movie rankings scrolly layout">
                 <div class="vis-column">
                     <div class="vis-frame" aria-label="Scatter plot visualization">
-                        <iframe title="Drama and arthouse films are the highest ranked genres among Columbia students" aria-label="Scatter Plot" id="datawrapper-chart-sFeLg" src="https://datawrapper.dwcdn.net/sFeLg/7/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none" height="436" data-external="1"></iframe>
+                        <iframe title="Drama and arthouse films are the highest ranked genres among Columbia students" aria-label="Scatter Plot" id="datawrapper-chart-sFeLg" src="https://datawrapper.dwcdn.net/sFeLg/7?dark=true" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none" height="436" data-external="1"></iframe>
                         <script type="text/javascript">
                             window.addEventListener("message", function (a) {
                                 if (void 0 !== a.data["datawrapper-height"]) {
