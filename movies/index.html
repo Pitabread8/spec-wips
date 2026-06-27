@@ -7,6 +7,13 @@
         <style>
             @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Roboto:wght@300;400&display=swap");
 
+            :root {
+                --black: #121212;
+                --dark: #272727;
+                --light: #9c9c9c;
+                --white: #f8f8f8;
+            }
+
             *,
             *::before,
             *::after {
@@ -16,8 +23,8 @@
             }
 
             body {
-                background: #ffffff;
-                color: #1f1a17;
+                background: var(--black);
+                color: var(--white);
                 font-family: "Playfair Display", Georgia, serif;
                 -webkit-font-smoothing: antialiased;
             }
@@ -36,15 +43,8 @@
                 gap: 0 24px;
                 align-items: start;
                 padding: 26px 0;
-                border-bottom: 1px solid #e7e1d8;
+                border-bottom: 1px solid var(--dark);
                 transition: background 0.2s;
-            }
-
-            .entry:hover {
-                background: rgba(0, 0, 0, 0.03);
-                margin: 0 -16px;
-                padding-left: 16px;
-                padding-right: 16px;
             }
 
             /* rank */
@@ -52,7 +52,7 @@
                 font-size: 38px;
                 font-weight: 700;
                 line-height: 1;
-                color: #c8c0b6;
+                color: var(--light);
                 letter-spacing: -0.04em;
                 padding-top: 4px;
                 text-align: right;
@@ -83,7 +83,7 @@
                 font-size: 21px;
                 font-weight: 700;
                 line-height: 1.2;
-                color: #1f1a17;
+                color: var(--white);
                 margin-bottom: 5px;
             }
 
@@ -92,7 +92,7 @@
                 font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
                 letter-spacing: 0.1em;
                 text-transform: uppercase;
-                color: #6f675e;
+                color: var(--light);
                 margin-bottom: 10px;
             }
 
@@ -105,7 +105,7 @@
                 font-size: 14px;
                 font-weight: 300;
                 line-height: 1.6;
-                color: #4f4941;
+                color: var(--light);
             }
 
             .entry--tie {
@@ -124,7 +124,7 @@
                 gap: 0 24px;
                 align-items: start;
                 padding: 12px 0;
-                border-bottom: 1px solid #e7e1d8;
+                border-bottom: 1px solid var(--dark);
             }
 
             .tie-film:first-child {
@@ -144,9 +144,9 @@
                     sans-serif;
                 font-size: 12px;
                 font-weight: 500;
-                color: #4f4941;
-                background: #f7f4ef;
-                border: 1px solid #e5ddd4;
+                color: var(--light);
+                background: var(--dark);
+                border: 1px solid var(--light);
                 margin-top: 8px;
                 padding: 2px 7px;
                 border-radius: 3px;
