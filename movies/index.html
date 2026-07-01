@@ -6,6 +6,14 @@
         <style>
             @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Roboto:wght@300;400&display=swap");
 
+            @font-face {
+                font-family: "Graphik";
+                src: url("https://spectator-fonts.s3.amazonaws.com/Graphik-400-Regular.otf") format("opentype");
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+            }
+
             :root {
                 --black: #121212;
                 --dark: #272727;
@@ -24,7 +32,7 @@
             body {
                 background: var(--black);
                 color: var(--white);
-                font-family: "Playfair Display", Georgia, serif;
+                font-family: Georgia, serif;
                 -webkit-font-smoothing: antialiased;
             }
 
@@ -52,6 +60,7 @@
                 letter-spacing: -0.04em;
                 padding-top: 4px;
                 text-align: right;
+                font-family: "Playfair Display", Georgia, serif;
             }
 
             .poster {
@@ -71,19 +80,21 @@
 
             .meta {
                 padding-top: 2px;
+                font-family: Georgia, serif;
             }
 
             .meta .title {
                 font-size: 21px;
                 font-weight: 700;
                 line-height: 1.2;
+                font-family: "Playfair Display", Georgia, serif;
                 color: var(--white);
                 margin-bottom: 5px;
             }
 
             .meta .byline {
                 font-size: 12px;
-                font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+                font-family: Graphik, helvetica, arial, sans-serif;
                 letter-spacing: 0.1em;
                 text-transform: uppercase;
                 color: var(--light);
@@ -91,11 +102,6 @@
             }
 
             .meta .desc {
-                font-family:
-                    "Roboto",
-                    -apple-system,
-                    Arial,
-                    sans-serif;
                 font-size: 14px;
                 font-weight: 300;
                 line-height: 1.6;
@@ -131,18 +137,14 @@
 
             .meta .points {
                 display: inline-block;
-                font-family:
-                    "Roboto",
-                    -apple-system,
-                    Arial,
-                    sans-serif;
+                font-family: Graphik, helvetica, arial, sans-serif;
                 font-size: 12px;
                 font-weight: 500;
                 color: var(--light);
                 background: var(--dark);
                 border: 1px solid var(--light);
                 margin-top: 8px;
-                padding: 2px 7px;
+                padding: 4px 7px;
                 border-radius: 3px;
                 letter-spacing: 0.05em;
             }
