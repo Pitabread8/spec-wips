@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Federal Scrutiny Timeline</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+    <body class="bg-white font-serif text-black">
+        <div id="timeline" class="max-w-5xl mx-auto py-10 px-4"></div>
+
+        <script>
+            // Edit this array to update the timeline. Swap `image` for a real
+            // image path/URL when one is available; everything else is plain text.
+            const events = [
+                {
+                    date: "Oct. 4, 2023",
+                    text: "Minouche Shafik is inaugurated on Low Steps as Columbia’s 19th president.",
+                    image: "100423.jpeg",
+                    alt: "Minouche Shafik shakes hands with another official at her inauguration.",
+                    credit: "Pippa Tsuki Carlson / Columbia Daily Spectator",
+                },
+                {
+                    date: "Oct. 7, 2023",
+                    text: "Hamas attacks Israel.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+2",
+                    alt: "Placeholder image 2",
+                    credit: "",
+                },
+                {
+                    date: "Oct. 12, 2023",
+                    text: "Dueling pro-Israel and pro-Palestinian protests take place on Butler lawns, the first of many campus demonstrations over the war in Gaza that Columbia would see throughout the academic year.",
+                    image: "101223.jpeg",
+                    alt: "Protesters wave Palestinian and Israeli flags during dueling demonstrations on Butler lawns.",
+                    credit: "Pippa Tsuki Carlson / Columbia Daily Spectator",
+                },
+                {
+                    date: "Feb. 12, 2024",
+                    text: "Following months of protests, the House Committee on Education launches its investigation into antisemitism at Columbia due to “its failure to protect Jewish students.” It requested “all reports of antisemitic acts or incidents and related documents and communications since January 1, 2021.”",
+                    image: "V3WOLHFBVRBPLLWD3RLCBPKGJI.jpeg",
+                    alt: "Minouche Shafik testifies before a congressional committee.",
+                    credit: "",
+                },
+                {
+                    date: "April 17, 2024",
+                    text: "Around 4am, hundreds of pro-Palestinian protesters pitched the ‘Gaza Solidarity Encampment,’ on East Butler Lawn hours before Shafik’s testimony on Capitol Hill, where lawmakers criticized her handling of antisemitic incidents on campus.",
+                    image: "041724.jpeg",
+                    alt: "Rows of tents fill East Butler Lawn as the Gaza Solidarity Encampment is pitched.",
+                    credit: "Asha Ahn / Columbia Daily Spectator",
+                },
+                {
+                    date: "April 18, 2024",
+                    text: "Shafik authorized the New York Police Department to sweep the ‘Gaza Solidarity Encampment,’ arresting over 100 individuals. Students would later repitch the encampment on West Butler Lawn. In a statement, then-committee chair Rep. Virginia Foxx (R-N.C.) said she was “glad” Shafik called the NYPD to “clear this radical, unauthorized encampment.”",
+                    image: "041824.jpeg",
+                    alt: "An NYPD officer stands among tents at the Gaza Solidarity Encampment.",
+                    credit: "Sydney Lee / Columbia Daily Spectator",
+                },
+                {
+                    date: "April 24, 2024",
+                    text: "Two days after Democratic lawmakers visited the Kraft Center for Jewish Student Life, House Speaker Mike Johnson (R-La.) became the highest ranking federal official to visit Columbia during the encampment. Holding a press conference alongside Foxx and two other Republicans, Johnson called for Shafik’s resignation.",
+                    image: "042424.jpeg",
+                    alt: "House Speaker Mike Johnson walks toward a bank of microphones for a press conference on campus.",
+                    credit: "Gabriella Gregor Splaver / Columbia Daily Spectator",
+                },
+                {
+                    date: "April 30, 2024",
+                    text: "Just after midnight, after negotiations reached an impasse, dozens of pro-Palestinian protesters occupied Hamilton Hall. The NYPD would sweep the building at around 9:30 p.m., arresting over 100 protesters.",
+                    image: "043024.jpeg",
+                    alt: "Protesters gather outside Hamilton Hall at night, with a “Hinds Hall” banner hung from the occupied building.",
+                    credit: "Heather Chen / Columbia Daily Spectator",
+                },
+                {
+                    date: "Aug. 13, 2024",
+                    text: "Shafik resigned from the presidency, becoming Columbia’s shortest tenured president since 1801. Katrina Armstrong, then-CEO of the Irving Medical Center was tapped to serve as Columbia’s interim president.",
+                    image: "041324.jpeg",
+                    alt: "Portrait of Katrina Armstrong.",
+                    credit: "Columbia University",
+                },
+                {
+                    date: "Oct. 31, 2024",
+                    text: "The committee published a 325-page report on how 11 universities–including Columbia and Barnard–handled antisemitism. Releasing internal administrative communications and records, it found that Columbia “offered greater concessions to encampment organizers than they publicly acknowledged” and that University administrators “expressed contempt” for congressional oversight.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+10",
+                    alt: "Placeholder image 10",
+                    credit: "",
+                },
+                {
+                    date: "Nov. 5, 2024",
+                    text: "Donald Trump wins the 2024 election, beating Vice President Kamala Harris and completing an unprecedented political comeback.",
+                    image: "110524.jpeg",
+                    alt: "Donald Trump walks through a crowd of press near Columbia's campus.",
+                    credit: "Isha Banerjee / Columbia Daily Spectator",
+                },
+                {
+                    date: "Jan. 20, 2025",
+                    text: "Trump is sworn in as the 47th president of the United States. Hours after his ceremony, he signs an executive order curtailing diversity, equity, and inclusion initiatives–the first of many executive orders aimed at scrutinizing higher education.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+12",
+                    alt: "Placeholder image 12",
+                    credit: "",
+                },
+                {
+                    date: "Mar. 7, 2025",
+                    text: "The Trump administration slashed $400 million in federal funding to Columbia due the University’s “continued inaction in the face of persistent harassment of Jewish students.” As part of the funding cut, $250 million in funding from the National Institutes of Health was canceled.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+13",
+                    alt: "Placeholder image 13",
+                    credit: "",
+                },
+                {
+                    date: "Mar. 8, 2025",
+                    text: "Immigration and Customs Enforcement agents detained Mahmoud Khalil, SIPA ’24, at his University-owned building. Court documents would later reveal that Secretary of State Marco Rubio would use a rarely cited provision of the Immigration and Nationality Act to justify Khalil’s detainment.",
+                    image: "030825.jpeg",
+                    alt: "A speaker addresses press and demonstrators on Low Steps.",
+                    credit: "",
+                },
+                {
+                    date: "Mar. 13, 2025",
+                    text: "The federal government sent a list of 13 demands to Armstrong to begin negotiations to restore the cancelled funding. The demands included placing the Middle East, South Asian, and African studies department under academic receivership, the implementation of a mask ban, and the granting Public Safety officers “full law enforcement authority, including arrest and removal of agitators.”",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+15",
+                    alt: "Placeholder image 15",
+                    credit: "",
+                },
+                {
+                    date: "Mar. 21, 2025",
+                    text: "Columbia announced it would partially complied with the demands laid out by the federal government in its March 13 letter, banning some masks on campus, hiring 36 “special officers who will have the ability to remove individuals from campus and/or arrest them,” and placing the Middle Eastern, South Asian, and African studies department and the Center for Palestine Studies under the purview of a senior vice provost.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+16",
+                    alt: "Placeholder image 16",
+                    credit: "",
+                },
+                {
+                    date: "Mar. 28, 2025",
+                    text: "Amid wide criticism of Columbia’s partial compliance with the federal government’s list of demands, Katrina Armstrong resigned from office. Claire Shipman assumed the role of acting University president.",
+                    image: "032825.jpeg",
+                    alt: "Katrina Armstrong testifies before a congressional committee.",
+                    credit: "Gabriella Gregor Splaver / Columbia Daily Spectator",
+                },
+                {
+                    date: "April 14, 2025",
+                    text: "ICE agents detained Mohsen Mahdawi, GS ’25, SIPA ’27, at his naturalization interview in Vermont. He was released on April 30, 2025.",
+                    image: "041425.jpeg",
+                    alt: "Mohsen Mahdawi speaks through a megaphone at a demonstration.",
+                    credit: "Gabriella Gregor Splaver / Columbia Daily Spectator",
+                },
+                {
+                    date: "May 22, 2025",
+                    text: "The Department of Health and Human Services’ Office for Civil Rights found Columbia to be in violation of Title VI due to the University “acting with deliberate indifference” toward addressing on-campus antisemitism since Oct. 7, 2023.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+19",
+                    alt: "Placeholder image 19",
+                    credit: "",
+                },
+                {
+                    date: "June 4, 2025",
+                    text: "The Department of Education announced that Columbia failed to meet accreditation standards because the University “is in violation of federal antidiscrimination laws.” Columbia’s accreditor, the Middle States Commission on Higher Education, would reaffirm the University’s accreditation in March 2026.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+20",
+                    alt: "Placeholder image 20",
+                    credit: "",
+                },
+                {
+                    date: "July 23, 2025",
+                    text: "Following months of negotiations, Columbia signed its $221 million deal with the federal government. As part of the deal, Columbia saw the reimbursement of “a vast majority” of its canceled federal funding.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+21",
+                    alt: "Placeholder image 21",
+                    credit: "",
+                },
+                {
+                    date: "Feb. 26, 2026",
+                    text: "ICE agents detained Elmina Aghayeva, GS ’26, at her University-owned residence. After lobbying by Mayor Zohran Mamdani, including an in-person conversation with President Donald Trump at the White House, she was released that evening.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+22",
+                    alt: "Placeholder image 22",
+                    credit: "",
+                },
+                {
+                    date: "April 1, 2026",
+                    text: "Columbia released its first semi-annual report detailing its progress on complying with the deal’s provisions. The report found that Columbia had complied with nearly all of the deal’s provisions and announced that the University would require “student attestations” to abide by commitments to civil inquiry and that administrators would be appointed to oversee academic programming and the “wellbeing of Jewish students.” It was the first benchmark of several to come in the University’s remaining two years of compliance with the deal.",
+                    image: "https://placehold.co/700x467/e5e5e5/737373?text=Image+23",
+                    alt: "Placeholder image 23",
+                    credit: "",
+                },
+            ];
+
+            const container = document.getElementById("timeline");
+
+            const dateBox = (date) => `
+                <span class="inline-block bg-black text-white text-xs sm:text-sm font-sans font-semibold tracking-wide uppercase px-3 py-1.5 rounded-sm whitespace-nowrap">
+                    ${date}
+                </span>`;
+
+            const card = (event) => `
+                <figure class="m-0">
+                    <img src="${event.image}" alt="${event.alt}" class="w-full aspect-[3/2] object-cover rounded-sm border border-neutral-200" />
+                </figure>
+                <p class="text-[11px] text-neutral-400 mt-1 mb-0">${event.credit}</p>
+                <div class="mt-3">
+                    <p class="text-xs sm:text-sm text-neutral-700 leading-relaxed">${event.text}</p>
+                </div>`;
+
+            const html = events
+                .map((event, i) => {
+                    const isEven = i % 2 === 0;
+
+                    return `
+                        <li class="relative pb-12 last:pb-0">
+
+                            <!-- mobile layout: date above a single-column card -->
+                            <div class="flex md:hidden items-center mb-4">
+                                ${dateBox(event.date)}
+                            </div>
+                            <div class="md:hidden">
+                                ${card(event)}
+                            </div>
+
+                            <!-- desktop layout: card alternates sides, date sits on the center spine -->
+                            <div class="hidden md:flex md:items-center md:gap-x-8">
+                                <div class="flex-1" style="order: ${isEven ? 1 : 3}">
+                                    ${card(event)}
+                                </div>
+                                <div class="flex flex-col items-center shrink-0" style="order: 2">
+                                    ${dateBox(event.date)}
+                                </div>
+                                <div class="flex-1" style="order: ${isEven ? 3 : 1}"></div>
+                            </div>
+                        </li>`;
+                })
+                .join("");
+
+            container.innerHTML = `
+                <h2 class="text-2xl sm:text-3xl font-bold text-center mb-10">Federal Scrutiny Timeline</h2>
+                <ol class="relative list-none p-0 m-0">
+                    <div class="hidden md:block absolute left-1/2 top-2 bottom-2 w-px bg-neutral-300 -translate-x-1/2"></div>
+                    <div class="md:hidden absolute left-[5px] top-2 bottom-2 w-px bg-neutral-300"></div>
+                    ${html}
+                </ol>`;
+        </script>
+    </body>
+</html>
