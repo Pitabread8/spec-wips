@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gender Mix by Year</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0&display=swap">
+<style>
+  :root {
+    --surface-1: #dedede;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --muted:     #898781;
+    --border:    rgba(11,11,11,0.10);
+    --series-women:  #2a78d6;
+    --series-men:    #eb6834;
+    --series-other:  #1baf7a;
+    --focus:     #2a78d6;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    color: var(--text-primary);
+    font-family: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding-inline: 20px;
+    padding-block: 28px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .year-select {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    align-self: flex-start;
+  }
+  .year-select button {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+  }
+  .year-select button:last-child { border-right: none; }
+  .year-select button[aria-pressed="true"] {
+    background: var(--surface-1);
+    color: var(--text-primary);
+  }
+  .year-select button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+  }
+  .waffle-grid {
+    container-type: inline-size;
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    align-content: start;
+    gap: 6px;
+    width: 100%;
+    min-height: calc(9 * 3.2cqi + 8 * 6px);
+  }
+  .waffle-icon {
+    font-family: "Material Symbols Rounded";
+    font-size: 3.2cqi;
+    line-height: 1;
+    text-align: center;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+  }
+  .waffle-icon.cat-women { color: var(--series-women); }
+  .waffle-icon.cat-men   { color: var(--series-men); }
+  .waffle-icon.cat-other { color: var(--series-other); }
+
+  .panel-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; font-size: 13px; }
+  .stat-row { display: flex; align-items: center; gap: 6px; color: var(--text-secondary); }
+  .stat-dot { width: 8px; height: 8px; border-radius: 3px; flex: none; }
+  .stat-row .stat-value { font-variant-numeric: tabular-nums; color: var(--text-primary); font-weight: 500; }
+  .stat-row.na { color: var(--text-secondary); font-style: italic; }
+  .stat-row.icon-key { color: var(--muted); }
+  .stat-row.icon-key .waffle-icon { font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <div class="header">
+    <h1>Columbia College and SEAS continue to enroll more women than men</h1>
+    <p class="subtitle">For several years, first-year classes have had more women than men. The number of students of “another gender” in the class of 2029 is unknown.</p>
+    <div class="year-select" id="year-select" role="group" aria-label="Year"></div>
+  </div>
+
+  <div class="panel" id="panel" aria-live="polite"></div>
+</div>
+
+<script>
+(function () {
+  var DATA = [
+    { year: 2021, women: 800, men: 760, other: null },
+    { year: 2022, women: 733, men: 693, other: 37 },
+    { year: 2023, women: 728, men: 694, other: 32 },
+    { year: 2024, women: 767, men: 688, other: 28 },
+    { year: 2025, women: 934, men: 863, other: null }
+  ];
+  var CAT_LABEL = { women: "Women", men: "Men", other: "Another gender" };
+  var PER_ICON = 10;
+
+  function iconCount(v) {
+    if (v == null) return 0;
+    return Math.max(1, Math.round(v / PER_ICON));
+  }
+
+  function pct(v, total) { return Math.round((v / total) * 100); }
+
+  function fmt(n) { return n.toLocaleString("en-US"); }
+
+  var yearSelectEl = document.getElementById("year-select");
+  var panelEl = document.getElementById("panel");
+
+  function render(year) {
+    var row = DATA.find(function (d) { return d.year === year; });
+    var cats = ["women", "men"];
+    var vals = [row.women, row.men];
+    if (row.other != null) { cats.push("other"); vals.push(row.other); }
+    var total = vals.reduce(function (a, b) { return a + b; }, 0);
+
+    panelEl.innerHTML = "";
+
+    var stats = document.createElement("div");
+    stats.className = "panel-stats";
+    cats.forEach(function (cat, ci) {
+      var r = document.createElement("div");
+      r.className = "stat-row";
+      r.innerHTML =
+        '<span class="stat-dot" style="background:var(--series-' + cat + ')"></span>' +
+        CAT_LABEL[cat] +
+        '<span class="stat-value">' + fmt(vals[ci]) + ' (' + pct(vals[ci], total) + '%)</span>';
+      stats.appendChild(r);
+    });
+    if (row.other == null) {
+      var na = document.createElement("div");
+      na.className = "stat-row na";
+      na.textContent = row.year === 2021
+        ? "Common Data Set did not have the “another gender” option yet"
+        : "Common Data Set removed the “another gender” option";
+      stats.appendChild(na);
+    }
+    var key = document.createElement("div");
+    key.className = "stat-row icon-key";
+    key.innerHTML = '<span class="waffle-icon" aria-hidden="true">person</span> = 10 people';
+    stats.appendChild(key);
+    panelEl.appendChild(stats);
+
+    var grid = document.createElement("div");
+    grid.className = "waffle-grid";
+    grid.setAttribute("aria-hidden", "true");
+    cats.forEach(function (cat, ci) {
+      var count = iconCount(vals[ci]);
+      for (var n = 0; n < count; n++) {
+        var icon = document.createElement("span");
+        icon.className = "waffle-icon cat-" + cat;
+        icon.textContent = "person";
+        grid.appendChild(icon);
+      }
+    });
+    panelEl.appendChild(grid);
+  }
+
+  DATA.forEach(function (row, i) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = row.year;
+    btn.setAttribute("aria-pressed", i === DATA.length - 1 ? "true" : "false");
+    btn.addEventListener("click", function () {
+      yearSelectEl.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+      btn.setAttribute("aria-pressed", "true");
+      render(row.year);
+    });
+    yearSelectEl.appendChild(btn);
+  });
+
+  render(DATA[DATA.length - 1].year);
+})();
+</script>
+</body>
+</html>
