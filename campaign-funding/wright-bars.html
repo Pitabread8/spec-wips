@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wright Legal Entities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --surface: #ffffff;
+    --ink: #1d1d1f;
+    --ink-2: #55555c;
+    --rule: #deded9;
+    --axis: #a9a9a3;
+    --wright: #1baf7a;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--surface);
+    color: var(--ink);
+    font: 16px/1.45 Roboto, sans-serif;
+  }
+  h1 { margin: 0 0 6px; font-size: clamp(22px, 5vw, 30px); line-height: 1.2; text-wrap: balance; }
+  .subtitle { margin: 0; color: var(--ink-2); }
+
+  /* The scroller's height is set in the script: one screen, plus the distance the chart has to travel sideways. */
+  #pin {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+  header { padding: 24px 16px 12px; }
+  #stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+  #track { position: absolute; top: 0; left: 0; display: block; will-change: transform; }
+  #axis { position: absolute; top: 0; left: 0; display: block; background: var(--surface); }
+
+  .grid line { stroke: var(--rule); }
+  .baseline { stroke: var(--axis); }
+  .axis text { fill: var(--ink-2); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .axis path, .axis line { display: none; }
+  .bar { fill: var(--wright); }
+  .value { fill: var(--ink); font-size: 14px; font-weight: 600; text-anchor: middle; font-variant-numeric: tabular-nums; }
+  .name { fill: var(--ink-2); font-size: 12px; text-anchor: middle; }
+
+
+  @media (forced-colors: active) {
+    .bar { fill: CanvasText; }
+  }
+</style>
+</head>
+<body>
+<div id="scroller">
+  <div id="pin">
+    <header>
+      <h1>Wright is funded by 68 different legal entities, which constitute approximately a third of his total funding.</h1>
+      <p class="subtitle" id="subtitle">These entities include unions, political committees, and corporations.</p>
+    </header>
+    <div id="stage">
+      <svg id="track"></svg>
+      <svg id="axis" aria-hidden="true"></svg>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Copy of Campaign Funding - wright entities.csv, inlined so the page also works when opened directly from disk.
+  const CSV = `Contributor Name,SUM of Amount,Contributor Name Cleaned
+1199 SEIU-NYS Political Action Fund,"$3,000.00",1199 SEIU-NYS Political Action Fund
+32BJ United ADF,"$3,000.00",32BJ United American Dream Fund
+40 ACRES PAC,$500.00,40 Acres PAC
+65 SPRING PEALTY LLC,"$2,500.00",65 Spring Realty LLC
+BRICKLAYERS&ALLIED CRAFTWORKERS LOCAL 1,$500.00,Bricklayers and Allied Craftworkers Local 1
+BW PAC,"$2,350.00",Brown & Weinraub PAC
+CARTHAGE REAL ESTATE ADVISORS LLC,$250.00,Carthage Real Estate Advisors LLC
+CHARTER COMMUNICATIONS PAC,"$1,000.00",Charter Communications PAC
+CONVENIENCE,$250.00,Convenience PAC
+CORDO & COMPANY LLC PAC,$300.00,Cordo & Company LLC PAC
+COZEN O'CONNER PAC,"$1,500.00",Cozen O'Connor PAC
+Cse Political Action Fund,"$3,000.00",Civil Service Employees Political Action Fund
+Cwa District One Pac,$500.00,Communications Workers of America District 1 PAC
+DAVIDOFF HUTCHER CITRON LLP,"$1,000.00","Davidoff, Hutcher & Citron LLP"
+DEMOCRATS FOR EDUCATION REFORM,"$2,500.00",Democrats for Education Reform
+DISTRICT COUNCIL 37 PAC,"$2,500.00",District Council 37 PAC
+FEATHERSTONHAUGH CLYNE MCCARDLE LLP,$500.00,"Featherstonhaugh, Wiley & Clyne LLP"
+Friends Of Michaelle Solages,"$1,000.00",Friends Of Michaelle Solages
+GAI PAC,"$2,500.00",GAI PAC
+"GP CONSTRUCTION, LLC","$6,000.00",GP Construction LLC
+GREAT PUBLIC SCHOOL PAC,"$2,000.00",Great Public Schools PAC
+Greater Ny Auto Dealers Assoc Inc Pac,$250.00,Greater New York Automobile Dealers Association Inc. PAC
+GREENBERG TRAURIG PA PAC,"$1,000.00",Greenberg Traurig P.A. PAC
+HANYC PAC,"$3,000.00",Hotel Association of New York City PAC
+HOME HEALTHCARE WORKERS OF AMERICA PA,"$3,000.00",Home Healthcare Workers of America PAC
+HOSPITAL ALLIANCE PAC,$500.00,Hospital Alliance PAC
+Ibew Ny Pac,$250.00,International Brotherhood of Electrical Workers New York PAC
+INTERNATL UNION OF JOURNEYMEN&ALLIED TRA,"$1,031.00",International Union of Journeymen and Allied Trades
+IUOE Local 30 State PAC,$250.00,International Union of Operating Engineers Local 30 State PAC
+JPMORGAN CHASE&CO PAC,"$1,250.00",JPMorgan Chase & Co. PAC
+"JUST LORRAINES PLACE TWO, LLC","$1,000.00",Just Lorraines Place Two LLC
+LATOYA JOYNER FOR ASSEMBLY ELECTION COMM,$375.00,Latoya Joyner For Assembly Election Committee
+LAWPAC of New York,"$2,000.00",LawPAC of New York
+Leadingage New York Pac,$600.00,LeadingAge New York PAC
+Local 6 Committee On Political Education,"$3,000.00",Local 6 Committee on Political Education
+MADISON SQ GARDEN NY PAC,"$3,000.00",Madison Square Garden New York PAC
+MANATTMPHELPS&PHILLIPS LLC,$250.00,"Manatt, Phelps & Phillips LLP"
+MANHATTAN BEER DISTRIBUTION LLC NYS PAC,"$3,500.00",Manhattan Beer Distribution LLC New York State PAC
+New York Bankers Pac,$500.00,New York Bankers PAC
+NEW YORK LEAGUE OF CONSERVATION VOTERS,$252.68,New York League Of Conservation Voters
+NEW YORK THOROUGHBRED HORSEMENS ASSOC,$250.00,New York Thoroughbred Horsemen's Association
+NEW YORK WORKING FAMILY,"$1,500.00",New York Working Family's Party
+NEW YORKERS FOR LOCALBUSINESSES PAC,"$1,500.00",New Yorkers for Local Businesses PAC
+NORTHEAST DAIRY PRODUCERS ASSOC PAC,$250.00,Northeast Dairy Producers Association PAC
+NY APARTMENT ASSOC PAC,"$1,000.00",New York Apartment Association PAC
+NYLCV GIVES GREEN,$250.00,NYLCV Gives Green
+Nys Afl-Cio Cope Account,"$3,000.00",New York State AFL-CIO Committee on Political Education
+NYSCORRECTIONALOFFICERS&POLICE PAC,$500.00,New York State Correctional Officers and Police Benevolent Association Inc. PAC
+NYSSCOA PAC,$500.00,New York State Supreme Court Officers Association PAC
+People for Diaz,$250.00,People for Diaz
+pfizer pac,$500.00,Pfizer PAC
+POST NY A LLIANCE PAC FUND,$250.00,Post New York Alliance PAC Fund
+Public Employees Federation,$500.00,Public Employees Federation
+Real Estate Board Pac,"$1,000.00",Real Estate Board PAC
+Soa Of Ny,$250.00,Standardbred Owners Association of New York
+SOCIALSERVICES EMPLOY UNION 371,$500.00,Social Service Employees Union Local 371
+Solidarity PAC Inc.,"$3,000.00",Solidarity PAC Inc.
+Speaker Heastie Pac,"$3,000.00",Speaker Heastie PAC
+Stand Up PAC,"$3,000.00",Stand Up PAC
+STATE STREET ASSOC PAC,"$2,000.00",State Street Associates PAC
+Studio Mechanics Local-52-PAC,$250.00,Studio Mechanics Local 52 PAC
+THE BUSINESS COUNCIL PAC INC,$531.00,The Business Council PAC Inc.
+The Elk Street Group Llc,$250.00,The Elk Street Group LLC
+Theatrical Teamsters Local 817 Pac Fund,$500.00,Theatrical Teamsters Local 817 PAC Fund
+Transport Workers Union Local 100,"$7,000.00",Transport Workers Union Local 100
+UNITED SERVICE WORKERS UNION,"$1,500.00",United Service Workers Union
+VOICE OF TEACHERS FOR EDUCATION,"$4,000.00",Voice of Teachers for Education
+YUSEF SALAAM 2025,$10.00,Yusef Salaam 2025
+Grand Total,"$98,699.68",`;
+
+  const PITCH = 112;
+  const BAR_WIDTH = 64;
+  const NAME_WIDTH = 100;
+  const LINE_HEIGHT = 15;
+  const MAX_NAME_LINES = 7;
+  const MIN_STAGE_HEIGHT = 320;
+  const margin = { top: 28, right: 24, bottom: 16 + MAX_NAME_LINES * LINE_HEIGHT, left: 56 };
+
+  const parseMoney = s => parseFloat(s.replace(/[$,]/g, ""));
+  const money = d3.format("$,.0f");
+  const axisMoney = v => d3.format("$,.0f")(v);
+
+  const parsed = d3.csvParse(CSV);
+  const [nameColumn, amountColumn, cleanedColumn] = parsed.columns;
+  const entities = d3.sort(
+    parsed.filter(d => d[nameColumn] !== "Grand Total").map(d => ({ name: d[cleanedColumn], amount: parseMoney(d[amountColumn]) })),
+    (a, b) => d3.descending(a.amount, b.amount) || d3.ascending(a.name.toLowerCase(), b.name.toLowerCase())
+  );
+  const total = d3.sum(entities, d => d.amount);
+
+  const scroller = document.getElementById("scroller");
+  const pin = document.getElementById("pin");
+  const stage = document.getElementById("stage");
+  const track = d3.select("#track");
+  const axis = d3.select("#axis");
+  let travel = 0;
+
+  function roundedTop(x, width, top, bottom) {
+    const r = Math.min(4, bottom - top);
+    return `M${x},${bottom}V${top + r}Q${x},${top} ${x + r},${top}H${x + width - r}Q${x + width},${top} ${x + width},${top + r}V${bottom}Z`;
+  }
+
+  // Wraps a name onto lines under its column. A single word wider than the column breaks mid-word.
+  function wrapName(node, name) {
+    const label = d3.select(node);
+    const fits = text => {
+      label.text(text);
+      return node.getComputedTextLength() <= NAME_WIDTH;
+    };
+    const lines = [];
+    let line = "";
+    name.split(/\s+/).forEach(word => {
+      if (fits(line ? `${line} ${word}` : word)) {
+        line = line ? `${line} ${word}` : word;
+        return;
+      }
+      if (line) lines.push(line);
+      line = "";
+      for (const char of word) {
+        if (line && !fits(line + char)) {
+          lines.push(line);
+          line = char;
+        } else {
+          line += char;
+        }
+      }
+    });
+    if (line) lines.push(line);
+
+    label.text("");
+    lines.slice(0, MAX_NAME_LINES).forEach((text, i) => {
+      label.append("tspan")
+        .attr("x", 0)
+        .attr("dy", i ? LINE_HEIGHT : 0)
+        .text(text);
+    });
+  }
+
+  function draw() {
+    const stageWidth = stage.clientWidth;
+    const height = Math.max(stage.clientHeight, MIN_STAGE_HEIGHT);
+    const width = margin.left + entities.length * PITCH + margin.right;
+    const baseline = height - margin.bottom;
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(entities, d => d.amount)])
+      .nice()
+      .range([baseline, margin.top]);
+
+    track.selectAll("*").remove();
+    track.attr("width", width).attr("height", height)
+      .attr("role", "img")
+      .attr("aria-label", `Column chart of donations from ${entities.length} legal entities to Wright, totaling ${money(total)}. The largest is ${entities[0].name} at ${money(entities[0].amount)}.`);
+
+    track.append("g")
+      .attr("class", "grid")
+      .selectAll("line")
+      .data(y.ticks(7).filter(Boolean))
+      .join("line")
+      .attr("x1", margin.left)
+      .attr("x2", width - margin.right)
+      .attr("y1", d => y(d))
+      .attr("y2", d => y(d));
+
+    const column = track.append("g").selectAll("g")
+      .data(entities)
+      .join("g")
+      .attr("transform", (d, i) => `translate(${margin.left + (i + 0.5) * PITCH},0)`);
+
+    column.append("path")
+      .attr("class", "bar")
+      .attr("d", d => roundedTop(-BAR_WIDTH / 2, BAR_WIDTH, y(d.amount), baseline));
+
+    column.append("text")
+      .attr("class", "value")
+      .attr("y", d => y(d.amount) - 8)
+      .text(d => money(d.amount));
+
+    column.append("text")
+      .attr("class", "name")
+      .attr("y", baseline + 20)
+      .each(function(d) { wrapName(this, d.name); });
+
+    track.append("line")
+      .attr("class", "baseline")
+      .attr("x1", margin.left)
+      .attr("x2", width - margin.right)
+      .attr("y1", baseline)
+      .attr("y2", baseline);
+
+    // The axis sits on its own surface above the moving chart, so it stays put while the columns pass behind it.
+    axis.selectAll("*").remove();
+    axis.attr("width", margin.left).attr("height", height);
+    axis.append("g")
+      .attr("class", "axis")
+      .attr("transform", `translate(${margin.left - 4},0)`)
+      .call(d3.axisLeft(y).ticks(7).tickSize(0).tickPadding(4).tickFormat(axisMoney));
+
+    travel = Math.max(0, width - stageWidth);
+    scroller.style.height = `${pin.clientHeight + travel}px`;
+    update();
+  }
+
+  function update() {
+    const distance = scroller.offsetHeight - pin.clientHeight;
+    const progress = distance > 0 ? Math.min(1, Math.max(0, -scroller.getBoundingClientRect().top / distance)) : 0;
+    track.style("transform", `translateX(${-progress * travel}px)`);
+  }
+
+  let scheduled = false;
+  window.addEventListener("scroll", () => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      update();
+    });
+  }, { passive: true });
+
+  let drawnSize = "";
+  new ResizeObserver(() => {
+    const size = `${stage.clientWidth}x${stage.clientHeight}`;
+    if (stage.clientWidth && size !== drawnSize) {
+      drawnSize = size;
+      draw();
+    }
+  }).observe(stage);
+
+  // Names are measured to wrap them, so measure again once Roboto has loaded.
+  document.fonts.load("12px Roboto").then(() => {
+    if (drawnSize) draw();
+  });
+</script>
+</body>
+</html>
