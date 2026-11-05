@@ -18,8 +18,8 @@
     --land: #f1f1ee;
     --border: #b5b5ae;
     --district: #cfcfc9;
-    --new-york: #4477ad;
-    --outside: #c2505a;
+    --new-york: #d9772b;
+    --outside: #7b55b8;
     --tip-bg: #1d1d1f;
     --tip-ink: #ffffff;
   }
@@ -74,7 +74,7 @@
   .legend-color.outside .dot { background: color-mix(in srgb, var(--outside) 50%, transparent); border: 1px solid var(--outside); }
   .legend-color.new-york .dot { background: color-mix(in srgb, var(--new-york) 50%, transparent); border: 1px solid var(--new-york); }
   .legend-size { display: block; overflow: visible; }
-  .legend-size circle { fill: var(--ink-2); fill-opacity: 0.12; stroke: var(--ink-2); stroke-width: 1; }
+  .legend-size circle { fill: none; stroke: var(--ink-2); stroke-width: 1; }
   .legend-size line { stroke: var(--ink-2); stroke-width: 1; }
   .legend-size text { fill: var(--ink-2); font-size: 12px; }
 
@@ -165,7 +165,7 @@
   // [[west, south], [east, north]] of each close-up.
   const VIEWS = {
     nyc: [[-74.26, 40.49], [-73.7, 40.92]],
-    sf: [[-122.52, 37.7], [-122.35, 37.82]]
+    sf: [[-122.57, 37.665], [-122.3, 37.855]]
   };
   const TRANSITION_MS = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1500;
 
@@ -217,7 +217,7 @@
   const map = d3.select("#map");
   const svg = map.append("svg")
     .attr("role", "img")
-    .attr("aria-label", `Congressional district map of the lower 48 states and DC, with an inset of the US Virgin Islands and one dot for each of ${donors.length} individual donors, placed at their ZIP code and sized by amount. Blue dots are in New York State and red dots are outside it.`);
+    .attr("aria-label", `Congressional district map of the lower 48 states and DC, with an inset of the US Virgin Islands and one dot for each of ${donors.length} individual donors, placed at their ZIP code and sized by amount. Orange dots are in New York State and purple dots are outside it.`);
   const geoLayer = svg.append("g");
   const coarseLayer = geoLayer.append("g");
   const landLayer = coarseLayer.append("g").attr("class", "land");
@@ -239,8 +239,8 @@
 
     const colors = legend.append("div").attr("class", "legend-group").selectAll("div")
       .data([
-        { key: "outside", label: "Outside New York" },
-        { key: "new-york", label: "New York" }
+        { key: "outside", label: "Outside New York State" },
+        { key: "new-york", label: "New York State" }
       ])
       .join("div")
       .attr("class", d => `legend-color ${d.key}`);
