@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wright Legal Entities</title>
+<title>Wright Donor Groups</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap">
@@ -42,6 +42,8 @@
   }
   header { padding: 24px 16px 12px; }
   #stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+  /* Matches the note on chevalier-map.html, but sits below the chart so it never covers the bar names. */
+  .note { margin: 0; padding: 0 16px 12px; color: #9b9ba0; font-size: 13px; }
   #track { position: absolute; top: 0; left: 0; display: block; will-change: transform; }
   #axis { position: absolute; top: 0; left: 0; display: block; background: var(--surface); }
 
@@ -96,14 +98,15 @@
 <div id="scroller">
   <div id="pin">
     <header>
-      <h1>Wright is funded by 68 unique legal entities, constituting roughly a third of his total campaign funding.</h1>
-      <p class="subtitle" id="subtitle">These entities include unions, political committees, and corporations.</p>
+      <h1>Wright received funding from 69 unique non-individual donors, constituting roughly a third of his total campaign funding.</h1>
+      <p class="subtitle" id="subtitle">These donor groups include unions, political committees, and limited liability companies.</p>
     </header>
     <div id="stage">
       <svg id="track"></svg>
       <svg id="axis" aria-hidden="true"></svg>
       <div id="cards" aria-live="polite"></div>
     </div>
+    <p class="note">Note: Uncategorized non-individual donations were not included.</p>
   </div>
 </div>
 
@@ -133,7 +136,8 @@ GAI PAC,"$2,500.00",GAI PAC
 GREAT PUBLIC SCHOOL PAC,"$2,000.00",Great Public Schools PAC
 Greater Ny Auto Dealers Assoc Inc Pac,$250.00,Greater New York Automobile Dealers Association Inc. PAC
 GREENBERG TRAURIG PA PAC,"$1,000.00",Greenberg Traurig P.A. PAC
-HANYC PAC,"$3,000.00",Hotel Association of New York City PAC
+HANYC PAC,"$1,000.00",Hotel Association of New York City PAC
+Healthcare Association of New York State PAC,"$2,000.00",Healthcare Association of New York State PAC
 HOME HEALTHCARE WORKERS OF AMERICA PA,"$3,000.00",Home Healthcare Workers of America PAC
 HOSPITAL ALLIANCE PAC,$500.00,Hospital Alliance PAC
 Ibew Ny Pac,$250.00,International Brotherhood of Electrical Workers New York PAC
@@ -190,7 +194,8 @@ Grand Total,"$98,699.68",`;
   const CARD_SPACE = 460 + 56 + 16; // Card width, its right inset, and a gap before the highlighted columns.
   const HOLD = 0.8; // Scrolling past one card takes this many screen heights.
   const MIN_PAN = 0.3; // Moving between stops takes at least this many screen heights, even when the chart barely moves.
-  const margin = { top: 28, right: 24, bottom: 16 + MAX_NAME_LINES * LINE_HEIGHT, left: 56 };
+  const NAME_OFFSET = 20; // From the baseline to the first line of a name.
+  const margin = { top: 28, right: 24, left: 56 };
 
   const curlyApostrophes = s => s.replace(/'/g, "’");
   const parseMoney = s => parseFloat(s.replace(/[$,]/g, ""));
@@ -284,8 +289,9 @@ Grand Total,"$98,699.68",`;
     return `M${x},${bottom}V${top + r}Q${x},${top} ${x + r},${top}H${x + width - r}Q${x + width},${top} ${x + width},${top + r}V${bottom}Z`;
   }
 
-  // Wraps a name onto lines under its column. A single word wider than the column breaks mid-word.
-  function wrapName(node, name) {
+  // Splits a name into lines that fit under its column, measured with the given text node. A single word wider than the
+  // column breaks mid-word.
+  function splitName(node, name) {
     const label = d3.select(node);
     const fits = text => {
       label.text(text);
@@ -310,21 +316,19 @@ Grand Total,"$98,699.68",`;
       }
     });
     if (line) lines.push(line);
-
-    label.text("");
-    lines.slice(0, MAX_NAME_LINES).forEach((text, i) => {
-      label.append("tspan")
-        .attr("x", 0)
-        .attr("dy", i ? LINE_HEIGHT : 0)
-        .text(text);
-    });
+    return lines.slice(0, MAX_NAME_LINES);
   }
 
   function draw() {
     const stageWidth = stage.clientWidth;
     const height = Math.max(stage.clientHeight, MIN_STAGE_HEIGHT);
     const width = margin.left + entities.length * PITCH + margin.right;
-    const baseline = height - margin.bottom;
+
+    // Leave only as much room under the baseline as the longest name needs, plus its descenders.
+    const probe = track.append("text").attr("class", "name");
+    entities.forEach(d => { d.lines = splitName(probe.node(), d.name); });
+    probe.remove();
+    const baseline = height - (NAME_OFFSET + (d3.max(entities, d => d.lines.length) - 1) * LINE_HEIGHT + 6);
     const y = d3.scaleLinear()
       .domain([0, d3.max(entities, d => d.amount)])
       .nice()
@@ -333,7 +337,7 @@ Grand Total,"$98,699.68",`;
     track.selectAll("*").remove();
     track.attr("width", width).attr("height", height)
       .attr("role", "img")
-      .attr("aria-label", `Column chart of donations from ${entities.length} legal entities to Wright, totaling ${money(total)}. The largest is ${entities[0].name} at ${money(entities[0].amount)}.`);
+      .attr("aria-label", `Column chart of donations from ${entities.length} non-individual donors to Wright, totaling ${money(total)}. The largest is ${entities[0].name} at ${money(entities[0].amount)}.`);
 
     track.append("g")
       .attr("class", "grid")
@@ -362,8 +366,13 @@ Grand Total,"$98,699.68",`;
 
     column.append("text")
       .attr("class", "name")
-      .attr("y", baseline + 20)
-      .each(function(d) { wrapName(this, d.name); });
+      .attr("y", baseline + NAME_OFFSET)
+      .selectAll("tspan")
+      .data(d => d.lines)
+      .join("tspan")
+      .attr("x", 0)
+      .attr("dy", (text, i) => i ? LINE_HEIGHT : 0)
+      .text(text => text);
 
     track.append("line")
       .attr("class", "baseline")

@@ -94,7 +94,8 @@
   .mark.spotlight { fill-opacity: 0.85; stroke: var(--ink); stroke-width: 2; }
   .mark.active { fill-opacity: 0.85; stroke: var(--ink); stroke-width: 1; }
 
-  .note { max-width: 1500px; margin: 0 auto; padding: 16px; color: #9b9ba0; font-size: 13px; }
+  /* The note stays pinned to the bottom of the sticky map, below the area the map fits into. */
+  .note { position: absolute; bottom: 12px; right: 16px; margin: 0; color: #9b9ba0; font-size: 13px; pointer-events: none; }
 
   #tooltip {
     position: fixed;
@@ -129,17 +130,17 @@
   <div class="graphic">
     <div id="legend" class="hidden"></div>
     <div id="map"></div>
+    <p class="note">Note: Only individual contributors are shown, and three donors with blank addresses were excluded.</p>
   </div>
   <div class="steps">
-    <section class="step"><div class="card"><p>Avila Chevalier will represent New York’s 13th congressional district, which covers Upper Manhattan and parts of the West Bronx.</p></div></section>
+    <section class="step"><div class="card"><p>Avila Chevalier will represent New York’s 13th Congressional District, which covers Upper Manhattan and parts of the West Bronx.</p></div></section>
     <section class="step"><div class="card"><p>Avila Chevalier raised $1.53 million over the course of her campaign, out of which around $1.46 million came from individual donors, according to federal election commissions records. Only 39 percent of those funds were from in-state donors, Spectator found.</p></div></section>
-    <section class="step"><div class="card"><p>Mapping out individual donors to Chevalier’s campaign reveals support from across the United States.</p></div></section>
+    <section class="step"><div class="card"><p>Mapping out individual donors to Avila Chevalier’s campaign reveals support from across the United States.</p></div></section>
     <section class="step"><div class="card"><p>One of those out of state donors is Saikat Chakrabarti, co-founder of Justice Democrats, a political action committee that aims to elect a “new generation of diverse, working-class leaders” who can deliver on “our most pressing, progressive priorities,” according to the organization’s website. The PAC boosted Alexandria Ocasio-Cortez’s insurgent campaign to success, and Chakrabarti later became her chief of staff in Congress.</p></div></section>
     <section class="step"><div class="card"><p>Chakrabarti, who is based in San Francisco, donated $7,000 directly to Avila Chevalier over the course of her campaign, according to campaign finance records. Justice Democrats, based in Centreville, Virginia, contributed thousands of dollars to the democratic socialist.</p></div></section>
     <section class="step"><div class="card"><p>Avila Chevalier’s team did not respond to a request for comment on the role of out of state support for her campaign, or receiving money from SuperPACs like American Priorities.</p></div></section>
   </div>
 </main>
-<p class="note">Note: Only individual contributors are shown, and three donors with blank addresses were excluded.</p>
 <div id="tooltip" aria-hidden="true"></div>
 
 <script>
@@ -216,6 +217,7 @@
 
   const tooltip = d3.select("#tooltip");
   const legend = d3.select("#legend");
+  const note = d3.select(".note");
   const map = d3.select("#map");
   const svg = map.append("svg")
     .attr("role", "img")
@@ -327,7 +329,8 @@
     const sizeFactor = Math.max(0.65, Math.min(1, (width - rail - 16) / 900));
     drawLegend(sizeFactor);
     legend.style("left", `${rail}px`);
-    const area = [[rail, 16 + legend.node().offsetHeight + 12], [width - 16, height - 16]];
+    note.style("left", `${rail}px`);
+    const area = [[rail, 16 + legend.node().offsetHeight + 12], [width - 16, height - 12 - note.node().offsetHeight - 12]];
 
     const projection = d3.geoAlbers()
       .rotate([96, 0])
