@@ -38,7 +38,8 @@
 
   /* The steps scroll over the sticky map. Only the cards take pointer events, so the map stays hoverable around them. */
   .steps { position: relative; margin-top: -100vh; margin-top: -100svh; pointer-events: none; }
-  .step { display: flex; align-items: center; min-height: 100vh; min-height: 100svh; padding: 0 16px; }
+  /* On phones and tablets the cards sit low and centered, below the part of the screen the map focuses on and above the note. */
+  .step { display: flex; align-items: flex-end; justify-content: center; min-height: 100vh; min-height: 100svh; padding: 0 16px 72px; }
   .card {
     width: min(360px, 100%);
     padding: 16px 20px;
@@ -49,7 +50,9 @@
     pointer-events: auto;
   }
   .card p { margin: 0; }
-  @media (min-width: 900px) { .step { padding-left: 32px; } }
+  @media (max-width: 479px) { .card { padding: 14px 16px; font-size: 15px; } }
+  /* On wide screens they sit in a rail on the left, beside the map. */
+  @media (min-width: 900px) { .step { align-items: center; justify-content: flex-start; padding: 0 0 0 32px; } }
 
   #legend {
     position: absolute;
@@ -95,7 +98,8 @@
   .mark.active { fill-opacity: 0.85; stroke: var(--ink); stroke-width: 1; }
 
   /* The note stays pinned to the bottom of the sticky map, below the area the map fits into. */
-  .note { position: absolute; bottom: 12px; right: 16px; margin: 0; color: #9b9ba0; font-size: 13px; pointer-events: none; }
+  .note { position: absolute; bottom: 12px; right: 16px; margin: 0; color: #9b9ba0; font-size: 13px; pointer-events: none; transition: opacity 0.6s, visibility 0.6s; }
+  .note.hidden { opacity: 0; visibility: hidden; }
 
   #tooltip {
     position: fixed;
@@ -130,15 +134,15 @@
   <div class="graphic">
     <div id="legend" class="hidden"></div>
     <div id="map"></div>
-    <p class="note">Note: Only individual contributors are shown, and three donors with blank addresses were excluded.</p>
+    <p class="note hidden">Note: Only individual contributors are shown, and three donors with blank addresses were excluded.</p>
   </div>
   <div class="steps">
     <section class="step"><div class="card"><p>Avila Chevalier will represent New York’s 13th Congressional District, which covers Upper Manhattan and parts of the West Bronx.</p></div></section>
-    <section class="step"><div class="card"><p>Avila Chevalier raised $1.53 million over the course of her campaign, out of which around $1.46 million came from individual donors, according to federal election commissions records. Only 39 percent of those funds were from in-state donors, Spectator found.</p></div></section>
+    <section class="step"><div class="card"><p>Avila Chevalier raised $1.53 million over the course of her campaign—$1.46 million of which came from individual donors, according to Federal Election Commission records. Only about 39 percent of those funds were from in-state donors, Spectator found.</p></div></section>
     <section class="step"><div class="card"><p>Mapping out individual donors to Avila Chevalier’s campaign reveals support from across the United States.</p></div></section>
-    <section class="step"><div class="card"><p>One of those out of state donors is Saikat Chakrabarti, co-founder of Justice Democrats, a political action committee that aims to elect a “new generation of diverse, working-class leaders” who can deliver on “our most pressing, progressive priorities,” according to the organization’s website. The PAC boosted Alexandria Ocasio-Cortez’s insurgent campaign to success, and Chakrabarti later became her chief of staff in Congress.</p></div></section>
+    <section class="step"><div class="card"><p>One of those out-of-state donors was Saikat Chakrabarti, co-founder of Justice Democrats, a PAC that aims to elect a “new generation of diverse, working-class leaders” who can deliver on “our most pressing, progressive priorities,” according to the organization’s website. The PAC boosted Rep. Alexandria Ocasio-Cortez’s (D-N.Y.) campaign to success, and Chakrabarti later became her chief of staff.</p></div></section>
     <section class="step"><div class="card"><p>Chakrabarti, who is based in San Francisco, donated $7,000 directly to Avila Chevalier over the course of her campaign, according to campaign finance records. Justice Democrats, based in Centreville, Virginia, contributed thousands of dollars to the democratic socialist.</p></div></section>
-    <section class="step"><div class="card"><p>Avila Chevalier’s team did not respond to a request for comment on the role of out of state support for her campaign, or receiving money from SuperPACs like American Priorities.</p></div></section>
+    <section class="step"><div class="card"><p>Avila Chevalier’s team did not respond to a request for comment on the role of out-of-state support for her campaign or money from super PACs like American Priorities.</p></div></section>
   </div>
 </main>
 <div id="tooltip" aria-hidden="true"></div>
@@ -170,7 +174,9 @@
     nyc: [[-74.26, 40.49], [-73.7, 40.92]],
     sf: [[-122.57, 37.665], [-122.3, 37.855]]
   };
-  const TRANSITION_MS = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1500;
+  // Matches the CSS breakpoint where the cards move into a rail beside the map.
+  const WIDE = window.matchMedia("(min-width: 900px)");
+  const TRANSITION_MS =window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1500;
 
   const donors = DATA.donors.map(([zip, amount, inNewYork]) => ({ zip, amount, inNewYork }));
 
@@ -309,6 +315,7 @@
   function showStep(animate) {
     const s = STEPS[step];
     legend.classed("hidden", !s.dots);
+    note.classed("hidden", !s.dots);
     markLayer.classed("hidden", !s.dots);
     highlightLayer.classed("hidden", !s.district);
     if (!scene) return;
@@ -325,12 +332,16 @@
 
   function draw(width, height) {
     // On wide screens the cards sit in a rail on the left, and the map fits to the right of it, below the legend.
-    const rail = width >= 900 ? 424 : 16;
+    const wide = WIDE.matches;
+    const rail = wide ? 424 : 16;
     const sizeFactor = Math.max(0.65, Math.min(1, (width - rail - 16) / 900));
     drawLegend(sizeFactor);
     legend.style("left", `${rail}px`);
     note.style("left", `${rail}px`);
-    const area = [[rail, 16 + legend.node().offsetHeight + 12], [width - 16, height - 12 - note.node().offsetHeight - 12]];
+    const top = 16 + legend.node().offsetHeight + 12;
+    const bottom = height - 12 - note.node().offsetHeight - 12;
+    // On phones and tablets the cards cover the lower part of the screen, so the map fits into the upper part.
+    const area = [[rail, top], [width - 16, wide ? bottom : top + (bottom - top) * 0.55]];
 
     const projection = d3.geoAlbers()
       .rotate([96, 0])
@@ -429,7 +440,8 @@
     function setActive(zip) {
       marks.classed("active", m => m.zip === zip);
     }
-    svg.on("pointermove", event => {
+    // On touch screens a tap shows the tooltip, which stays until another tap or a scroll.
+    svg.on("pointermove pointerdown", event => {
       if (!STEPS[step].dots) return;
       const [px, py] = d3.pointer(event, svg.node());
       const [x, y] = current.invert([px, py]);
@@ -443,12 +455,13 @@
       setActive(nearest.zip);
       showTooltip(event, nearest);
     });
-    svg.on("pointerleave", () => {
+    svg.on("pointerleave", event => {
+      if (event.pointerType !== "mouse") return;
       setActive(null);
       tooltip.style("visibility", "hidden");
     });
 
-    scene = { marks, zoom, viewTransform };
+    scene = { marks, zoom, viewTransform, setActive };
     showStep(false);
   }
 
@@ -462,22 +475,32 @@
     }
   }).observe(map.node());
 
-  // A step takes over when it crosses the middle of the screen.
-  const observer = new IntersectionObserver(entries => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      const next = +entry.target.dataset.step;
-      if (next !== step) {
-        step = next;
-        showStep(true);
-      }
+  // On wide screens a step takes over once the top of its card passes 65% of the way down the screen. On phones and
+  // tablets the cards stop low, so a step takes over once its whole card has scrolled into view above the note.
+  const cards = [...document.querySelectorAll(".step .card")];
+  function isShown(card) {
+    const { top, bottom } = card.getBoundingClientRect();
+    return WIDE.matches ? top < window.innerHeight * 0.65 : bottom < window.innerHeight - 40;
+  }
+  function onScroll() {
+    if (scene) scene.setActive(null);
+    tooltip.style("visibility", "hidden");
+    let next = 0;
+    cards.forEach((card, i) => {
+      if (isShown(card)) next = i;
+    });
+    if (next !== step) {
+      step = next;
+      showStep(true);
     }
-  }, { rootMargin: "-50% 0px -50% 0px" });
-  document.querySelectorAll(".step").forEach((node, i) => {
-    node.dataset.step = i;
-    observer.observe(node);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  // Crossing the breakpoint moves the cards without resizing the map, so redraw for the new layout.
+  WIDE.addEventListener("change", () => {
+    if (drawnSize) draw(...drawnSize.split("x").map(Number));
   });
   showStep(false);
+  onScroll();
 </script>
 </body>
 </html>
